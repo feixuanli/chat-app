@@ -1,10 +1,14 @@
 
 // Instantiate web socket server 
 const ws = require('ws');
+const http = require('http');
 
 const wsServer = new ws.WebSocketServer({
     port: 3001
 });
+
+const httpServer = http.createServer();
+httpServer.listen(3002)
 
 // make the server to listen to a pariticular event from client 
 
