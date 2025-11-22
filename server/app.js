@@ -1,29 +1,15 @@
 
-// Instantiate web socket server 
-// const ws = require('ws'); // socket.io to broadcast the data
-const { Server } = require('socket.io');
-const http = require('http');
+import { Server } from "socket.io";
+import express from 'express';
 
-// v1 have http server and ws server to listern to different ports 
-// const wsServer = new ws.WebSocketServer({
-//     port: 3001
-// });
 
-// const httpServer = http.createServer();
-// httpServer.listen(3002)
+const app = express();
+const PORT = process.env.PORT || 3001;
+app.listen(PORT);
 
-// v2  have http server and ws server to listern to same ports 
-
-// const httpServer = http.createServer();
-// httpServer.listen(3001);
-
-// const wsServer = new ws.WebSocketServer({
-//     server: httpServer
-// });
-
-// v3 
-const httpServer = http.createServer();
-httpServer.listen(3001);
+const httpServer = app.listen(PORT, () => {
+    console.log(`server is now listening to ${PORT}`)
+})
 
 const io = new Server(httpServer, {
     cors: {
