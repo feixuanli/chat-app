@@ -2,7 +2,7 @@
 // use web socket api that is available in the web browser
 // aside fetch , setTimeout, etc
 // ws: websocket protocol, aside http protocol
-const socket = new WebSocket("ws://localhost:3001");
+const socket = io("ws://localhost:3001");
 
 const form = document.querySelector("form");
 
@@ -10,14 +10,14 @@ const sendMessage = (e) => {
   e.preventDefault();
   const input = document.querySelector("input");
   if (input.value) {
-    socket.send(input.value);
+    socket.emit('message', input.value);
     input.value = '';
   }
 };
 
 form.addEventListener("submit", sendMessage);
 
-socket.addEventListener("message", ({ data }) => {
+socket.on("message", ( data ) => {
   const ulElement = document.querySelector('ul');
   const li = document.createElement('li');
   li.textContent = data;
