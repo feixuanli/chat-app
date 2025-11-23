@@ -1,25 +1,39 @@
-// initialize socket connection at the very start
-// use web socket api that is available in the web browser
-// aside fetch , setTimeout, etc
-// ws: websocket protocol, aside http protocol
 const socket = io("ws://localhost:3001");
 
 const form = document.querySelector("form");
+const input = document.querySelector("input");
+const p = document.querySelector("p");
 
 const sendMessage = (e) => {
   e.preventDefault();
-  const input = document.querySelector("input");
   if (input.value) {
-    socket.emit('message', input.value);
-    input.value = '';
+    socket.emit("message", input.value);
+    input.value = "";
   }
 };
 
 form.addEventListener("submit", sendMessage);
 
-socket.on("message", ( data ) => {
-  const ulElement = document.querySelector('ul');
-  const li = document.createElement('li');
+socket.on("message", (data) => {
+  const ulElement = document.querySelector("ul");
+  const li = document.createElement("li");
   li.textContent = data;
   ulElement.appendChild(li);
+  p.textContent = '';
+});
+
+input.addEventListener("keypress", () => {
+  // activity event
+  socket.emit("activity", socket.id.substring(0, 5));
+});
+
+let activityTimer;
+
+socket.on("activity", (name) => {
+  p.textContent = `${name} is typing`;
+  // clear after 3 seconds
+  clearTimeout(activityTimer);
+  activityTimer = setTimeout(() => {
+    p.textContent = '';
+  }, 3000);
 });

@@ -1,35 +1,44 @@
-
 import { Server } from "socket.io";
-import express from 'express';
-
+import express from "express";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-app.listen(PORT);
+const PORT = process.env.PORT || "3001";
 
 const httpServer = app.listen(PORT, () => {
-    console.log(`server is now listening to ${PORT}`)
-})
+  console.log(`server is now listening to ${PORT}`);
+});
 
 const io = new Server(httpServer, {
-    cors: {
-        orgin: '*'
-    }
-})
+  cors: {
+    origin: "*",
+  },
+});
 
-// make the server to listen to a pariticular event from client 
+io.on("connection", (socket) => {
+  console.log(` User ${socket.id} is connected`);
+  // Upon connection - only to current user
+  socket.emit("message", "welcome to chat app");
+  // upon connect - to all other users
+  socket.broadcast.emit(
+    "message",
+    `User  ${socket.id.substring(0, 5)} connected `
+  );
 
-io.on('connection', (socket) => {
+  // upon disconnection - all other users
+  socket.on("disconnect", () => {
+    socket.broadcast.emit(
+      "message",
+      `User ${socket.id.substring(0, 5)} disconnected`
+    );
+  });
 
-    console.log(` User ${socket.id} is connected`)
-    socket.on('message', (data) => {
-        // data <Buffer 6e 6e 6e>
-        // data get exchanged from buffers, this is buffer data , which is a stream of data 
-        // const b = Buffer.from(data).toString();
-        // console.log('b', b);
-        console.log('data', data)
-        // socket.send(`${data}`);
-        io.emit('message', `${socket.id.substring(0,5)}:  ${data}`);
-    })
+  // capturing activity event
+  socket.on("activity", (name) => {
+    socket.broadcast.emit("activity", name);
+  });
 
-})
+  socket.on("message", (data) => {
+    console.log("data", data);
+    io.emit("message", `${socket.id.substring(0, 5)}:  ${data}`);
+  });
+});
