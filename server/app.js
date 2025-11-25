@@ -15,6 +15,5 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(`User ${socket.id} is connected`)
- 
+  console.log(`User ${socket.id} is connected`);
 });

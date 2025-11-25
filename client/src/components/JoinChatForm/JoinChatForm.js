@@ -1,11 +1,17 @@
 import React from 'react';
 import styles from './JoinChatForm.module.css';
 
-const JoinChatForm = () => {
+const JoinChatForm = ({onJoin}) => {
+
+  const hanldeSubmit = (e) => {
+    e.preventDefault();
+    onJoin();
+  }
+
   return (
     <div className={styles.joinChatContainer}>
         <h1>Join a Room to Chat</h1>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={hanldeSubmit}>
             <input
                 type="text"
                 placeholder="enter your name"
